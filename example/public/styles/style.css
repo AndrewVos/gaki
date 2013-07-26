@@ -1,0 +1,20 @@
+.box { float: left; }
+#root { max-width: 980px; margin: 0 auto; }
+
+#box1 { width: 50%; }
+#box2 { width: 50%; }
+#box3 { width: 50%; }
+#box4 { width: 50%; }
+#box5 { width: 100%; }
+#box6 { width: 100%; }
+
+
+@media only screen and (max-width: 800px) {
+	#box1 { width: 100%; }
+	#box2 { width: 100%; }
+	#box3 { width: 100%; }
+	#box4 { width: 100%; }
+	#box5 { width: 100%; }
+	#box6 { width: 100%; }
+}
+

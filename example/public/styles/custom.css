@@ -1,0 +1,23 @@
+html {
+  color: #333;
+  font-family: georgia, "Times New Roman", Times, serif;
+}
+
+a {
+  color: #333;
+}
+
+#box1 a, #box2 a {
+  text-decoration: none;
+}
+
+#box2, #box4 {
+  text-align: right;
+}
+
+@media only screen and (max-width: 800px) {
+	#box1 { text-align: center; }
+	#box2 { text-align: center; }
+	#box3 { text-align: center; }
+	#box4 { text-align: center; }
+}

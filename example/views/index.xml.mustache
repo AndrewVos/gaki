@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<feed xmlns='http://www.w3.org/2005/Atom'>
+  <title>{{title}}</title>
+  <id>{{url}}</id>
+  <updated>{{lastUpdated}}</updated>
+  <author>
+    <name>{{author}}</name>
+  </author>
+  {{#articles}}
+    <entry>
+      <title>{{Title}}</title>
+      <link href='{{url}}/{{WebPath}}' rel='alternate' />
+      <id>{{url}}/{{WebPath}}</id>
+      <published>{{LastUpdated}}</published>
+      <updated>{{LastUpdated}}</updated>
+      <author>
+        <name>{{author}}</name>
+      </author>
+      <summary type='html'>
+        {{Rendered}}
+      </summary>
+    </entry>
+  {{/articles}}
+</feed>
