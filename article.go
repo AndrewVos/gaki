@@ -58,6 +58,8 @@ func (article *Article) Render() string {
       "lastUpdated": CachedArticles[0].LastUpdated,
     }
     article.rendered = mustache.Render(article.Text, context)
+    article.rendered = strings.Replace(article.rendered, "&gt;", ">", -1)
+    article.rendered = strings.Replace(article.rendered, "&lt;", "<", -1)
     article.rendered = HighlightCode(article.rendered)
   }
   return article.rendered
