@@ -64,7 +64,7 @@ func (app *Application) article(path string) string {
   context["date"] = article.Date.Format("2006-01-02")
   context["articleTitle"] = article.Title
   context["articlePath"] = article.WebPath
-  context["body"] = article.Rendered
+  context["body"] = article.Render()
   return mustache.RenderInLayout(app.Layouts["article"], app.Layouts["layout"], context)
 }
 
