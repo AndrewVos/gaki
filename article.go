@@ -1,7 +1,10 @@
 package gaki
 
 import (
+  "io/ioutil"
   "time"
+  "strings"
+  "regexp"
   "github.com/hoisie/mustache"
 )
 
@@ -12,15 +15,43 @@ type Article struct {
   Title string
   Date time.Time
   Year int
-  WebPath string
   LastUpdated string
+  rendered string
+}
+
+func CreateArticle(application *Application, path string) *Article {
+  buffer, _ := ioutil.ReadFile(path)
+  split := strings.SplitN(string(buffer), "\n\n", 2)
+
+  titleMatcher := regexp.MustCompile("title:\\s*(.*)\\s*")
+  dateMatcher := regexp.MustCompile("date:\\s([\\d\\/]*)\\s*")
+
+  article := new(Article)
+  article.Application = application
+  article.FilePath = path
+  article.Text = split[1]
+  article.Title = titleMatcher.FindStringSubmatch(split[0])[1]
+  article.Date,_ = time.Parse("2006/01/02", dateMatcher.FindStringSubmatch(split[0])[1])
+  article.LastUpdated = ConvertTimeToISO8601(article.Date)
+  return article
+}
+
+func (article *Article) WebPath() string {
+  webPath := article.FilePath
+  webPath = strings.Replace(webPath, "articles/", "", -1)
+  webPath = strings.Replace(webPath, "-", "/", 3)
+  webPath = strings.Replace(webPath, ".txt", "", 1)
+  webPath += "/"
+  return webPath
 }
 
 func (article *Article) Render() string {
-  var context = article.Application.DefaultContext(article.Title)
-  context["date"] = article.Date.Format("2006-01-02")
-  context["path"] = article.WebPath
-  rendered := mustache.Render(article.Text, context)
-  rendered = HighlightCode(rendered)
-  return rendered
+  if article.rendered == "" {
+    var context = article.Application.DefaultContext(article.Title)
+    context["date"] = article.Date.Format("2006-01-02")
+    context["path"] = article.WebPath
+    article.rendered = mustache.Render(article.Text, context)
+    article.rendered = HighlightCode(article.rendered)
+  }
+  return article.rendered
 }
