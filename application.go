@@ -43,47 +43,41 @@ func (app *Application) Run() {
   web.Run(":" + app.Port)
 }
 
-func (app *Application) DefaultContext(pageTitle string) map[string]interface{} {
-  url := app.Host
-  title := app.Title
-  if pageTitle != "" {
-    title = title + " - " + pageTitle
-  }
-
-  return map[string]interface{} {
-    "url": url,
-    "title": title,
-    "disqus": app.Disqus,
-  }
-}
-
 func (app *Application) article(path string) string {
   filePath := "articles/" + strings.Replace(path, "/", "-", -1) + ".txt"
   article:= FindArticleByFilePath(filePath)
-  var context = app.DefaultContext(article.Title)
-  context["date"] = article.Date.Format("2006-01-02")
-  context["articleTitle"] = article.Title
-  context["articlePath"] = article.WebPath
-  context["body"] = article.Render()
+  var context = map[string]interface{} {
+    "title": app.Title + " - " + article.Title,
+    "article": article,
+    "disqus": app.Disqus,
+  }
   return mustache.RenderInLayout(app.Layouts["article"], app.Layouts["layout"], context)
 }
 
 func (app *Application) home() string {
-  var context = app.DefaultContext("")
-  context["articlesByYear"] = ArticlesGroupedByYear()
+  var context = map[string]interface{} {
+    "title": app.Title,
+    "articlesByYear": ArticlesGroupedByYear(),
+  }
   return mustache.RenderInLayout(app.Layouts["index"], app.Layouts["layout"], context)
 }
 
 func (app *Application) page(name string) string {
   page := ReadPage("./pages/" + name + ".mustache")
-  return mustache.RenderInLayout(page.Body, app.Layouts["layout"], app.DefaultContext(page.Title))
+  var context = map[string]interface{} {
+    "title": app.Title + " - " + page.Title,
+  }
+  return mustache.RenderInLayout(page.Body, app.Layouts["layout"], context)
 }
 
 func (app *Application) rss(ctx *web.Context) string {
   ctx.ContentType("application/xml")
-  var context = app.DefaultContext("")
-  context["author"] = app.Author
-  context["articles"] = CachedArticles
-  context["lastUpdated"] = CachedArticles[0].LastUpdated
+  var context = map[string]interface{} {
+    "url": app.Host,
+    "title": app.Title,
+    "author": app.Author,
+    "articles": CachedArticles,
+    "lastUpdated": CachedArticles[0].LastUpdated,
+  }
   return mustache.Render(app.Layouts["index.xml"], context)
 }

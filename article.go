@@ -45,11 +45,18 @@ func (article *Article) WebPath() string {
   return webPath
 }
 
+func (article *Article) ShortDate() string {
+  return article.Date.Format("2006-01-02")
+}
+
 func (article *Article) Render() string {
   if article.rendered == "" {
-    var context = article.Application.DefaultContext(article.Title)
-    context["date"] = article.Date.Format("2006-01-02")
-    context["path"] = article.WebPath
+    var context = map[string]interface{} {
+      "url": article.Application.Host,
+      "title": article.Application.Title,
+      "author": article.Application.Author,
+      "lastUpdated": CachedArticles[0].LastUpdated,
+    }
     article.rendered = mustache.Render(article.Text, context)
     article.rendered = HighlightCode(article.rendered)
   }
