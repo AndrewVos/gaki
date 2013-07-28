@@ -70,22 +70,14 @@ func (app *Application) page(name string) string {
   return mustache.RenderInLayout(page.Body, app.Layouts["layout"], context)
 }
 
-type Rss struct {
-  Host string
-  Title string
-  Author string
-  Articles Articles
-  LastUpdated string
-}
-
 func (app *Application) rss(ctx *web.Context) string {
   ctx.ContentType("application/xml")
-  var rss = &Rss{
-    Host: app.Host,
-    Title: app.Title,
-    Author: app.Author,
-    Articles: CachedArticles,
-    LastUpdated: CachedArticles[0].LastUpdated,
+  var context = map[string]interface{} {
+    "url": app.Host,
+    "title": app.Title,
+    "author": app.Author,
+    "articles": CachedArticles,
+    "lastUpdated": CachedArticles[0].LastUpdated,
   }
-  return mustache.Render(app.Layouts["index.xml"], rss)
+  return mustache.Render(app.Layouts["index.xml"], context)
 }
