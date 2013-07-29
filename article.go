@@ -5,7 +5,6 @@ import (
   "time"
   "strings"
   "regexp"
-  "html"
   "github.com/hoisie/mustache"
 )
 
@@ -59,8 +58,6 @@ func (article *Article) Render() string {
       "lastUpdated": CachedArticles[0].LastUpdated,
     }
     article.rendered = mustache.Render(article.Text, context)
-    article.rendered = html.UnescapeString(article.rendered)
-    article.rendered = HighlightCode(article.rendered)
   }
   return article.rendered
 }
