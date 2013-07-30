@@ -8,21 +8,22 @@ import (
   "errors"
   "path"
   "os/exec"
+  "html"
 )
 
-func HighlightCode(html string) string {
+func HighlightCode(body string) string {
   matcher := regexp.MustCompile("<pre>:::(\\w+)((?s).*?)</pre>")
-  for _,matches:= range matcher.FindAllStringSubmatch(html, -1) {
+  for _,matches:= range matcher.FindAllStringSubmatch(body, -1) {
     lang := matches[1]
-    code := matches[2]
+    code := html.UnescapeString(matches[2])
     highlighted, err := highlightWithPygments(lang, code)
     if err == nil {
-      html = strings.Replace(html, matches[0], highlighted, 1)
+      body = strings.Replace(body, matches[0], highlighted, 1)
     } else {
       fmt.Print(err)
     }
   }
-  return html
+  return body
 }
 
 func pygmentizerPath() string {
