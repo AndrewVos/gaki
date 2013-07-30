@@ -46,6 +46,14 @@ func FindArticleByFilePath(filePath string) *Article {
   return nil
 }
 
+func LatestArticles() Articles{
+  if len(CachedArticles) < 10 {
+    return CachedArticles
+  } else {
+    return CachedArticles[:10]
+  }
+}
+
 func ArticlesGroupedByYear() []*ArticlesForYear {
   var years = make(map[int]bool)
   var uniqueYears = []int{}

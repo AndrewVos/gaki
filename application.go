@@ -76,8 +76,8 @@ func (app *Application) rss(ctx *web.Context) string {
     "url": app.Host,
     "title": app.Title,
     "author": app.Author,
-    "articles": CachedArticles,
-    "lastUpdated": CachedArticles[0].LastUpdated,
+    "articles": LatestArticles(),
+    "lastUpdated": LatestArticles()[0].LastUpdated,
   }
   return mustache.Render(app.Layouts["index.xml"], context)
 }
